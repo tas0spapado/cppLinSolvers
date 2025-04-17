@@ -1,0 +1,12 @@
+# ignore all binaries 
+bins/*
+libs/*
+objs/*
+
+.cache/
+*.swp
+*~
+
+# ignore compilation database
+compile_commands.json
+

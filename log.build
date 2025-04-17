@@ -1,0 +1,17 @@
+##### INSTALLING HEADERS #####
+(cd src/tensors; make install_headers)
+make[1]: Entering directory '/home/tasos/Desktop/numericalAnalysis/src/tensors'
+Linked: Tensor/Tensor.h → /home/tasos/Desktop/numericalAnalysis/iheaders/Tensor.h
+Linked: Vector/Vector.h → /home/tasos/Desktop/numericalAnalysis/iheaders/Vector.h
+make[1]: Leaving directory '/home/tasos/Desktop/numericalAnalysis/src/tensors'
+##### BUILDING ALL MODULES #####
+(cd src/tensors; make )
+make[1]: Entering directory '/home/tasos/Desktop/numericalAnalysis/src/tensors'
+g++ -std=c++20 -pipe -fPIC -O2 -DBUILD_TIMESTAMP_STR=\"17-04-2025.22-33-19.767784120\" -DPROJ_ROOT_DIR=\"/home/tasos/Desktop/numericalAnalysis\"  -Wall -Wextra   -I/home/tasos/Desktop/numericalAnalysis/iheaders -c Tensor/Tensor.cpp -o /home/tasos/Desktop/numericalAnalysis/objs/Tensor/Tensor.o
+g++ -std=c++20 -pipe -fPIC -O2 -DBUILD_TIMESTAMP_STR=\"17-04-2025.22-33-20.903906707\" -DPROJ_ROOT_DIR=\"/home/tasos/Desktop/numericalAnalysis\"  -Wall -Wextra   -I/home/tasos/Desktop/numericalAnalysis/iheaders -c Vector/Vector.cpp -o /home/tasos/Desktop/numericalAnalysis/objs/Vector/Vector.o
+g++ -shared -o /home/tasos/Desktop/numericalAnalysis/libs/libtensors.so /home/tasos/Desktop/numericalAnalysis/objs/Tensor/Tensor.o /home/tasos/Desktop/numericalAnalysis/objs/Vector/Vector.o -L/home/tasos/Desktop/numericalAnalysis/libs    -Wl,-rpath,/home/tasos/Desktop/numericalAnalysis/libs 
+make[1]: Leaving directory '/home/tasos/Desktop/numericalAnalysis/src/tensors'
+(cd tests/test-tensors; make )
+make[1]: Entering directory '/home/tasos/Desktop/numericalAnalysis/tests/test-tensors'
+g++ -std=c++20 -pipe -O2 -DBUILD_TIMESTAMP_STR=\"17-04-2025.22-33-21.702656129\" -DPROJ_ROOT_DIR=\"/home/tasos/Desktop/numericalAnalysis\"  -Wall -Wextra -Werror  -I/home/tasos/Desktop/numericalAnalysis/iheaders test-tensors.cpp -o /home/tasos/Desktop/numericalAnalysis/bins/test-tensors -L/home/tasos/Desktop/numericalAnalysis/libs -ltensors   -Wl,-rpath,/home/tasos/Desktop/numericalAnalysis/libs 
+make[1]: Leaving directory '/home/tasos/Desktop/numericalAnalysis/tests/test-tensors'
