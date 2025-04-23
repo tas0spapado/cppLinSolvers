@@ -1,4 +1,4 @@
-SRC_FILES = Tensor/Tensor.cpp Vector/Vector.cpp 
+SRC_FILES = Tensor/Tensor.cpp Vector/Vector.cpp
 TARGET_NAME = tensors
 BUILD_MODE = RELEASE
 

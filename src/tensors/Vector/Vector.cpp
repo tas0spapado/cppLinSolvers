@@ -1,58 +1,94 @@
 #include "Vector.h"
-#include <cstdlib>
+#include <cstddef>
+#include <initializer_list>
 #include <iostream>
+#include <cstdlib>
 
-Vector::Vector(int m, double value):
+
+Vector::Vector(size_t m, double value):
 Tensor(m,1,value)
 {}
+
+
+Vector::Vector(std::initializer_list<double> init):
+Tensor(1,init.size(),0.0)
+{
+    size_t j=0;
+    for (double val: init)
+        this->at(0,j++) = val;
+}
+
 
 Vector::Vector(const Tensor& other):
 Tensor(other)
 {
-    if (M>1 && N>1) 
+    if (!(this->rows()==1 || this->columns()==1))
     {
-        std::cerr << "FATAL ERROR: initiated vector with more than 1 rows and columns\n";
+        std::cerr << "FATAL ERROR: Cannot construct Vector from Tensor - not 1D.\n";
         std::exit(EXIT_FAILURE);
     }
 }
 
-const double& Vector::at(int ii) const 
+
+size_t Vector::size() const 
 {
     return 
     (
-        (M>1)?A.at(ii).at(0):A.at(0).at(ii)
+        (this->rows() > this->columns()) ? this->rows() : this->columns()
     );
 }
 
-double& Vector::at(int ii) 
+
+double& Vector::operator[](size_t i)
 {
+    if (i>=this->size())
+    {
+        std::cerr << "FATAL ERROR: index " << i << " out of bounds for Vector with size: " << this->size() << ".\n";
+        std::exit(EXIT_FAILURE);
+    }
+    
     return 
     (
-        (M>1)?A.at(ii).at(0):A.at(0).at(ii)
+        (this->rows() > this->columns())
+        ?
+        this->at(i,0)
+        :
+        this->at(0,i)
     );
 }
 
-int Vector::size() const 
+
+const double& Vector::operator[](size_t i) const 
 {
-    if (M>1) 
-        return M; 
-    else 
-        return N;
+    if (i>=this->size())
+    {
+        std::cerr << "FATAL ERROR: index " << i << " out of bounds for Vector with size: " << this->size() << ".\n";
+        std::exit(EXIT_FAILURE);
+    }
+    
+    return 
+    (
+        (this->rows() > this->columns())
+        ?
+        this->at(i,0)
+        :
+        this->at(0,i)
+    );
 }
+
 
 double Vector::operator&(const Vector& rhs) const 
 {
-    double dot_product = 0.0;
-
-    if (this->size() != rhs.size())
+    if (this->size()!=rhs.size())
     {
-        std::cerr << "FATAL ERROR: cannot compute dot product of vectors with different length\n";
+        std::cerr << "FATAL ERROR: Vector dot product dimension mismatch.\n";
         std::exit(EXIT_FAILURE);
     }
+    double result = 0.0;
 
-    for (int i=0; i<size(); ++i)
-        dot_product += this->at(i)*rhs.at(i);
+    for (size_t i=0; i<this->size(); ++i)
+        result += this->operator[](i)*rhs[i];
 
-    return dot_product;
+    return result; 
 }
 
