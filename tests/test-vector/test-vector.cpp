@@ -40,6 +40,12 @@ int main()
     V4.print();
     V5.print();
     std::cout << "dot product = " << (V4&V5) << '\n';
-    
+
+    print("Test operator-");
+    Vector V6 = {1,2,3};
+    V6.print();
+    V6 = -V6; 
+    V6.print();
+
     return 0;
 }

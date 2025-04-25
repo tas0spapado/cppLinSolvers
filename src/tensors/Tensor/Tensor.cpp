@@ -9,6 +9,15 @@ void Tensor::initialize()
     n_cols = storage_cols;
 }
 
+Tensor Tensor::eye(size_t m)
+{
+    Tensor result(m,m,0.0);
+    for (size_t i=0; i<m; ++i)
+        result.at(i,i) = 1.0;
+
+    return result;
+}
+
 
 Tensor::Tensor():
 storage_rows(1),
@@ -347,6 +356,19 @@ Tensor& Tensor::operator*=(double rhs)
 
     *this = rhs * (*this);
     return *this;
+}
+
+
+Tensor Tensor::operator-() const 
+{
+    Tensor result(*this);
+    for (size_t i=0; i<this->rows(); ++i)
+    {
+        for (size_t j=0; j<this->columns(); ++j)
+            result.at(i,j) = -result.at(i,j);
+    }
+
+    return result;
 }
 
 

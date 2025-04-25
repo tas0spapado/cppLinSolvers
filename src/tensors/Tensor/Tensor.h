@@ -17,6 +17,8 @@ class Tensor
         size_t n_cols;                          //numer of columns
         virtual void initialize();
     public:
+        static Tensor eye(size_t m);   //returns identity tensor
+
         /* Constructors & Destructors */
         Tensor();
         Tensor(size_t m, size_t n, double value);                           //constructor for uniform value
@@ -46,8 +48,9 @@ class Tensor
         Tensor& operator-=(double rhs);
         Tensor& operator*=(const Tensor& rhs);
         Tensor& operator*=(double rhs);
+        Tensor operator-() const;
 
-        /* Tensor Handling */
+        /* Utilities */
         void print() const;
         double norm() const;        //computes the norm2 of the tensor
         virtual void transpose();

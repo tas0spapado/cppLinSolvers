@@ -8,7 +8,7 @@
 class Vector: public Tensor{
     public:
         /* Constructors */
-        Vector() {}
+        Vector() = default;
         Vector(size_t m, double value);             //constructor for uniform value
         Vector(std::initializer_list<double> init); //initializer_list constructor
         Vector(const Tensor& other);                //construct from Tensor - no actual slicing
