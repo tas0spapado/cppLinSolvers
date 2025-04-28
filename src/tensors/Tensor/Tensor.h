@@ -62,6 +62,7 @@ class Tensor
         inline size_t jstorage() const {return storage_cols;}
         inline size_t rows() const {return n_rows;}
         inline size_t columns() const {return n_cols;}
+        inline bool is_square() const {return (this->rows() == this->columns());}
 };
 
 #endif

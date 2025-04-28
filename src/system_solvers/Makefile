@@ -1,15 +1,15 @@
-SRC_FILES = Tensor/Tensor.cpp Vector/Vector.cpp Matrix/Matrix.cpp 
-TARGET_NAME = tensors
+SRC_FILES = SystemSolver/SystemSolver.cpp Jacobi/Jacobi.cpp
+TARGET_NAME = systemsolvers
 BUILD_MODE = RELEASE
 
 # FLAGS 
 OPT_FLAGS = -O2
 WARN_FLAGS = -Wall -Wextra #-Werror
-USER_DEFINES = 	#extra user defines, like macros or other flags like -pthread 
-USER_INC_PATHS =  #for extra header dir, other than share_headers
-LIBS = #libs in $(LIB_DIR) 
-USER_LIB_DIRS = #directories of extra libraries that will be linked to the current library 
-USER_LIBS = #names of the libraries 
+USER_DEFINES = 		#extra user defines, like macros or other flags like -pthread 
+USER_INC_PATHS =  	#for extra header dir, other than share_headers
+LIBS = -ltensors 	#libs in $(LIB_DIR) 
+USER_LIB_DIRS = 	#directories of extra libraries that will be linked to the current library 
+USER_LIBS = 		#names of the libraries 
 
 # DIRECTORIES 
 PROJ_ROOT_DIR_0 = ../..
@@ -80,3 +80,4 @@ clean:
 
 check:
 	@echo "LDFLAGS: " $(LDFLAGS)
+

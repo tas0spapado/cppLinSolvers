@@ -92,3 +92,21 @@ double Vector::operator&(const Vector& rhs) const
     return result; 
 }
 
+
+Vector& Vector::operator=(const Tensor& rhs)
+{
+    if (this == &rhs)
+        return *this;
+
+    this->Tensor::operator=(rhs);
+
+    if (!(this->rows()==1 || this->columns()==1))
+    {
+        std::cerr << "FATAL ERROR: Cannot assign Tensor " 
+            << "(" << this->rows() << " x " << this->columns() << ")"
+            << " to Vector- not 1D.\n";
+        std::exit(EXIT_FAILURE);
+    }
+    
+    return *this;
+}
