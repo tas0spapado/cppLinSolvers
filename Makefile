@@ -21,6 +21,8 @@ build:
 	(cd tests/test-vector; $(BUILD))
 	(cd tests/test-matrix; $(BUILD))
 	(cd tests/test-jacobi; $(BUILD))
+	(cd tests/test-gaussseidel; $(BUILD))
+	(cd tests/test-system_solvers; $(BUILD))
 
 clean: 
 	@echo "##### CLEANING ALL MODULES #####"
@@ -30,6 +32,8 @@ clean:
 	(cd tests/test-vector; $(CLEAN))
 	(cd tests/test-matrix; $(CLEAN))
 	(cd tests/test-jacobi; $(CLEAN))
+	(cd tests/test-gaussseidel; $(CLEAN))
+	(cd tests/test-system_solvers; $(CLEAN))
 	-rm -v iheaders/*
 
 install: 

@@ -1,4 +1,4 @@
-SRC_FILES = SystemSolver/SystemSolver.cpp Jacobi/Jacobi.cpp
+SRC_FILES = SystemSolver/SystemSolver.cpp Jacobi/Jacobi.cpp GaussSeidel/GaussSeidel.cpp
 TARGET_NAME = systemsolvers
 BUILD_MODE = RELEASE
 
@@ -73,6 +73,12 @@ install_headers:
 			echo "Warning: $$hdr not found."; \
 		fi \
 	done
+	@if [ -f system_solvers.h ]; then \
+		ln -sf "$$(realpath --relative-to=$(HEAD_DIR) system_solvers.h)" "$(HEAD_DIR)/system_solvers.h"; \
+		echo "Linked: system_solvers.h → $(HEAD_DIR)/system_solvers.h"; \
+	else \
+		echo "Warning: system_solvers.h not found."; \
+	fi
 
 clean: 
 	-rm -v $(TARGET)
