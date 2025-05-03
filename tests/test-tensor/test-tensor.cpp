@@ -11,9 +11,9 @@ int main()
 {
     print("Tensor Test");
 
-    print("Testing Default Constructor");
+    /*print("Testing Default Constructor");
     Tensor T1;
-    T1.print();
+    T1.print();*/
    
     print("Testing Uniform Constructor");
     Tensor T2(2,3,1.0);
@@ -39,26 +39,24 @@ int main()
     T4.print(); 
 
     print("Testing Transpose");
-    T4.transpose();
-    T4.print();
+    T3.transpose();
+    T3.print();
 
     print("Testing Other Functions");
     Tensor T5 = {{3,4}};
     T5.print();
     std::cout << "Norm: " << T5.norm() << std::endl;
-    std::cout << "Storage rows: " << T5.istorage() << std::endl;
-    std::cout << "Storage columns: " << T5.jstorage() << std::endl;
-    std::cout << "Logic rows: " << T5.rows() << std::endl;
-    std::cout << "Logic columns: " << T5.columns() << std::endl;
+    std::cout << "Rows: " << T5.rows() << std::endl;
+    std::cout << "Columns: " << T5.columns() << std::endl;
     std::cout << std::endl; 
 
     print("Testing Column and Row Getters");
     T4.print();
     std::cout << "2nd row: \n";
-    T1 = T4.extract_row(1);
+    Tensor T1 = T4.row(1);
     T1.print();
     std::cout << "2nd column: \n";
-    T1 = T4.extract_column(1);
+    T1 = T4.column(1);
     T1.print();
 
     print("Testing Addition of Double");
@@ -76,7 +74,11 @@ int main()
     Tensor T8 = 2.0*T4;
     T8.print();
 
-
+    print("Testing Return std::vector");
+    const std::vector<double>& A = T4.A();
+    for (const double& val : A)
+        std::cout << val << " ";
+    std::cout << '\n';
 
     return 0;
 }

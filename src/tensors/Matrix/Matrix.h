@@ -14,7 +14,7 @@ class Matrix: public Tensor{
         /* Constructors */
         Matrix() = default;
         Matrix(size_t m, double value);     //constructor for uniform value
-        Matrix(std::initializer_list<std::initializer_list<double>> init);  //initializer list constructor
+        Matrix(const std::initializer_list<std::initializer_list<double>>& init);  //initializer list constructor
         Matrix(const Tensor& other);
 };
 

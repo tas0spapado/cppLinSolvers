@@ -10,7 +10,7 @@ class Vector: public Tensor{
         /* Constructors */
         Vector() = default;
         Vector(size_t m, double value);             //constructor for uniform value
-        Vector(std::initializer_list<double> init); //initializer_list constructor
+        Vector(const std::initializer_list<double>& init); //initializer_list constructor
         Vector(const Tensor& other);                //construct from Tensor - no actual slicing
 
         size_t size() const;

@@ -3,41 +3,32 @@
 #include <iostream>
 #include <cmath>
 
-void Tensor::initialize()
-{
-    n_rows = storage_rows;
-    n_cols = storage_cols;
-}
 
 Tensor Tensor::eye(size_t m)
 {
     Tensor result(m,m,0.0);
     for (size_t i=0; i<m; ++i)
-        result.at(i,i) = 1.0;
+        result.set(i,i,1.0);
 
     return result;
 }
 
 
 Tensor::Tensor():
-storage_rows(1),
-storage_cols(1),
-A(1, std::vector<double>(1,0.0))
-{
-    initialize();
-}
+A_(),
+rows_(0),
+cols_(0)
+{}
 
 
 Tensor::Tensor(size_t m, size_t n, double value):
-storage_rows(m),
-storage_cols(n),
-A(m,std::vector<double>(n,value))
-{
-    initialize();
-}
+A_(m*n,value),
+rows_(m),
+cols_(n)
+{}
 
 
-Tensor::Tensor(std::initializer_list<std::initializer_list<double>> init)
+Tensor::Tensor(const std::initializer_list<std::initializer_list<double>>& init)
 {
     if (init.size() == 0)
     {
@@ -45,96 +36,98 @@ Tensor::Tensor(std::initializer_list<std::initializer_list<double>> init)
         std::exit(EXIT_FAILURE);
     }
 
-    storage_rows = init.size();
-    storage_cols = init.begin()->size();
+    rows_ = init.size();
+    cols_ = init.begin()->size();
 
     for (const auto& row: init)
     {
-        if (row.size() != storage_cols)
+        if (row.size() != cols_)
         {
             std::cerr << "FATAL ERROR: Inconsistent row sizes in initializer list.\n";
             std::exit(EXIT_FAILURE);
         }
     }
-
-    A.resize(storage_rows,std::vector<double>(storage_cols,0.0));
-
-    size_t i = 0;
+    
     for (const auto& row: init)
     {
-        size_t j = 0;
-        for (double val: row)
-            A.at(i).at(j++) = val;
-        ++i;
+        for (const double& val: row)
+            A_.push_back(val);
     }
-
-    initialize();
 }
 
 
 Tensor::Tensor(const Tensor& other):
-storage_rows(other.storage_rows),
-storage_cols(other.storage_cols),
-A(other.A)
-{
-    initialize();
-}
+A_(other.A_),
+rows_(other.rows_),
+cols_(other.cols_)
+{}
 
 
 Tensor::Tensor(Tensor&& other) noexcept:
-storage_rows(other.storage_rows), 
-storage_cols(other.storage_cols), 
-A(std::move(other.A))
+A_(std::move(other.A_)),
+rows_(other.rows_),
+cols_(other.cols_)
 {
-    other.storage_rows = 0;
-    other.storage_cols = 0;
-    other.n_rows = 0;
-    other.n_cols =0;
-    initialize();
+    other.rows_ = 0;
+    other.cols_ =0;
 }
 
 
 const double& Tensor::at(size_t i, size_t j) const
 {
-    return A.at(i).at(j);
+    if (i>=this->rows() || j>=this->columns())
+    {
+        std::cerr << "FATAL ERROR: Attempted to access element (" << i << "," << j << ") of a " 
+            << rows_ << "x" << cols_ << "tensor.\n";  
+        std::exit(EXIT_FAILURE);
+    }
+
+    return A_.at(i*cols_+j);
 }
 
 
-double& Tensor::at(size_t i, size_t j)
+void Tensor::set(size_t i, size_t j, double value)
 {
-    return A.at(i).at(j);
+    if (i>=this->rows() || j>=this->columns())
+    {
+        std::cerr << "FATAL ERROR: Attempted to modify element (" << i << "," << j << ") of a " 
+            << rows_ << "x" << cols_ << "tensor.\n";  
+        std::exit(EXIT_FAILURE);
+    }
+    
+    A_.at(i*cols_+j) = value;
 }
 
 
-Tensor Tensor::extract_row(size_t i) const
+Tensor Tensor::row(size_t i) const
 {
     if (i >= this->rows())
     {
-        std::cerr << "FATAL ERROR: extract_row index " << i << " out of bounds for Tensor with " << this->rows() << " rows.\n";
+        std::cerr << "FATAL ERROR: row index " << i << " out of bounds for Tensor with " << this->rows() << " rows.\n";
         std::exit(EXIT_FAILURE);
     }
 
     Tensor row(1,this->columns(),0.0);
 
     for (size_t j=0; j<this->columns(); j++)
-        row.at(0,j) = this->at(i,j);
+        row.set(0,j,this->at(i,j));
 
     return row;
 }
 
 
-Tensor Tensor::extract_column(size_t j) const 
+Tensor Tensor::column(size_t j) const 
 {
     if (j >= this->columns())
     {
-        std::cerr << "FATAL ERROR: extract_column index " << j << " out of bounds for Tensor with " << this->columns() << " columns.\n";
+        std::cerr << "FATAL ERROR: column index " << j << " out of bounds for Tensor with " << this->columns() << " columns.\n";
         std::exit(EXIT_FAILURE);
     }
 
     Tensor column(this->rows(), 1, 0.0);
 
     for (size_t i=0; i<this->rows(); i++)
-        column.at(i,0) = this->at(i,j);
+        column.set(i,0,this->at(i,j));
 
     return column;
 }
@@ -145,11 +138,9 @@ Tensor& Tensor::operator=(const Tensor& rhs)
     if (this == &rhs)
         return *this;
 
-    storage_rows = rhs.storage_rows;
-    storage_cols = rhs.storage_cols;
-    A = rhs.A;
-    
-    initialize();
+    A_ = rhs.A_;
+    rows_ = rhs.rows_;
+    cols_ = rhs.cols_;
 
     return *this;
 }
@@ -160,15 +151,12 @@ Tensor& Tensor::operator=(Tensor&& rhs) noexcept
     if (this == &rhs)   
         return *this;
 
-    storage_rows = rhs.storage_rows;
-    storage_cols = rhs.storage_cols;
-    A = std::move(rhs.A);
-    initialize();
+    A_ = std::move(rhs.A_);
+    rows_ = rhs.rows_;
+    cols_ = rhs.cols_;
 
-    rhs.storage_rows = 0;
-    rhs.storage_cols = 0;
-    rhs.n_rows = 0;
-    rhs.n_cols = 0;
+    rhs.rows_ = 0;
+    rhs.cols_ = 0;
 
     return *this;
 }
@@ -191,7 +179,7 @@ Tensor Tensor::operator*(const Tensor& rhs) const
         {
             for (size_t k=0; k < this->columns(); ++k)
             {
-                result(i,j) += this->at(i,k)*rhs.at(k,j);
+                result.A_.at(i*result.columns()+j) += this->at(i,k)*rhs.at(k,j);
             }
         }
     }
@@ -216,7 +204,7 @@ Tensor Tensor::operator+(const Tensor& rhs) const
     {
         for (size_t j=0; j < this->columns(); ++j)
         {
-            result(i,j) = this->at(i,j)+rhs.at(i,j);
+            result.set(i,j,this->at(i,j)+rhs.at(i,j));
         }
     }
 
@@ -240,7 +228,7 @@ Tensor Tensor::operator-(const Tensor& rhs) const
     {
         for (size_t j=0; j < this->columns(); ++j)
         {
-            result(i,j) = this->at(i,j)-rhs.at(i,j);
+            result.set(i,j,this->at(i,j)-rhs.at(i,j));
         }
     }
 
@@ -251,9 +239,8 @@ Tensor Tensor::operator-(const Tensor& rhs) const
 Tensor Tensor::operator+(double rhs) const 
 {
     Tensor result(*this);
-    for (auto& row: result.A)
-        for (double& value: row)
-            value += rhs;
+    for (double& ele: result.A_)
+        ele += rhs;
 
     return result; 
 }
@@ -262,20 +249,16 @@ Tensor Tensor::operator+(double rhs) const
 Tensor Tensor::operator-(double rhs) const 
 {
     Tensor result(*this);
-    for (auto& row: result.A)
-        for (double& value: row)
-            value -= rhs;
 
-    return result; 
+    return result+(-rhs); 
 }
 
 
 Tensor operator*(double lhs, const Tensor& rhs)
 {
     Tensor result(rhs);
-    for (auto& row: result.A)
-        for (double& value: row)
-            value *= lhs;
+    for (double& ele: result.A_)
+        ele *= lhs;
 
     return result; 
 }
@@ -283,78 +266,48 @@ Tensor operator*(double lhs, const Tensor& rhs)
 
 Tensor& Tensor::operator+=(const Tensor& rhs)
 {
-    /*for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            this->at(i,j) += rhs.at(i,j);
-    }*/
-
     *this = *this + rhs; 
+    
     return *this;
 }
 
 
 Tensor& Tensor::operator+=(double rhs)
 {
-    /*for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            this->at(i,j) += rhs;
-    }*/
-
     *this = *this + rhs;
+    
     return *this;
 }
 
 
 Tensor& Tensor::operator-=(const Tensor& rhs)
 {
-    /*for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            this->at(i,j) -= rhs.at(i,j);
-    }*/
-
     *this = *this - rhs;
+    
     return *this;
 }
 
 
 Tensor& Tensor::operator-=(double rhs)
 {
-    /*for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            this->at(i,j) -= rhs;
-    }*/
-
     *this = *this - rhs; 
+    
     return *this;
 }
 
 
 Tensor& Tensor::operator*=(const Tensor& rhs)
 {
-    /*for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            this->at(i,j) *= rhs.at(i,j);
-    }*/
-
     *this = *this * rhs;
+    
     return *this;
 }
 
 
 Tensor& Tensor::operator*=(double rhs)
 {
-    /*for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            this->at(i,j) *= rhs;
-    }*/
-
     *this = rhs * (*this);
+    
     return *this;
 }
 
@@ -365,7 +318,7 @@ Tensor Tensor::operator-() const
     for (size_t i=0; i<this->rows(); ++i)
     {
         for (size_t j=0; j<this->columns(); ++j)
-            result.at(i,j) = -result.at(i,j);
+            result.set(i,j,-result.at(i,j));
     }
 
     return result;
@@ -406,7 +359,7 @@ void Tensor::transpose()
     {
         for (size_t j=0; j<this->columns(); ++j)
         {
-            T(j,i) = this->at(i,j);
+            T.set(j,i,this->at(i,j));
         }
     }
 

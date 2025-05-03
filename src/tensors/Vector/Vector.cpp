@@ -10,12 +10,13 @@ Tensor(m,1,value)
 {}
 
 
-Vector::Vector(std::initializer_list<double> init):
-Tensor(1,init.size(),0.0)
+Vector::Vector(const std::initializer_list<double>& init):
+Tensor(init.size(),1,0.0)
 {
-    size_t j=0;
+    size_t i=0;
     for (double val: init)
-        this->at(0,j++) = val;
+        A_.at(i++) = val;
+
 }
 
 
@@ -32,10 +33,7 @@ Tensor(other)
 
 size_t Vector::size() const 
 {
-    return 
-    (
-        (this->rows() > this->columns()) ? this->rows() : this->columns()
-    );
+    return A_.size();
 }
 
 
@@ -47,14 +45,7 @@ double& Vector::operator[](size_t i)
         std::exit(EXIT_FAILURE);
     }
     
-    return 
-    (
-        (this->rows() > this->columns())
-        ?
-        this->at(i,0)
-        :
-        this->at(0,i)
-    );
+    return A_.at(i);
 }
 
 
@@ -66,14 +57,7 @@ const double& Vector::operator[](size_t i) const
         std::exit(EXIT_FAILURE);
     }
     
-    return 
-    (
-        (this->rows() > this->columns())
-        ?
-        this->at(i,0)
-        :
-        this->at(0,i)
-    );
+    return A_.at(i);
 }
 
 
@@ -87,7 +71,8 @@ double Vector::operator&(const Vector& rhs) const
     double result = 0.0;
 
     for (size_t i=0; i<this->size(); ++i)
-        result += this->operator[](i)*rhs[i];
+        result += A_.at(i)*rhs.A_.at(i);
+        //result += this->operator[](i)*rhs[i];
 
     return result; 
 }

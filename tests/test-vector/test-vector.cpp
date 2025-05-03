@@ -12,9 +12,9 @@ int main()
 
     print("Vector Test");
 
-    print("Test Default Constructor");
+    /*print("Test Default Constructor");
     Vector V1; 
-    V1.print();
+    V1.print();*/
 
 
     print("Test Uniform Constructor");
@@ -23,7 +23,6 @@ int main()
 
     print("Test Initializer List Constructor");
     Vector V3{1,2,3,4,5};
-    V3.transpose();
     V3.print();
     
     print("Test operator+=(const Tensor& rhs)");
@@ -38,8 +37,9 @@ int main()
     Vector V4 = {1,2,3};
     Vector V5(3,1);
     V4.print();
+    V5.transpose();
     V5.print();
-    std::cout << "dot product = " << (V4&V5) << '\n';
+    std::cout << "dot product = " << (V4&V5) << "\n\n";
 
     print("Test operator-");
     Vector V6 = {1,2,3};

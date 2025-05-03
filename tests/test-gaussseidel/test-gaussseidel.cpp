@@ -1,4 +1,4 @@
-#include "Matrix.h"
+#include "SparseMatrix.h"
 #include "Vector.h"
 #include "SystemSolver.h"
 #include "GaussSeidel.h"
@@ -18,7 +18,7 @@ int main()
     std::cout << "Solution of a tri-diagonal system.\n\n";
 
     print("Coefficient Matrix");
-    Matrix A = 
+    SparseMatrix A = 
     {
         {4,1,0,0,0},
         {1,4,1,0,0},
@@ -30,7 +30,6 @@ int main()
 
     print("Source Vector");
     Vector b = {6,12,18,24,24};
-    b.transpose();
     b.print();
 
     print("Initial Guess");

@@ -8,7 +8,7 @@ Tensor(m,m,value)
 {}
 
 
-Matrix::Matrix(std::initializer_list<std::initializer_list<double>> init):
+Matrix::Matrix(const std::initializer_list<std::initializer_list<double>>& init):
 Tensor(init)
 {
     if (this->rows() != this->columns())

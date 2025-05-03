@@ -6,13 +6,6 @@ SOURCE_DIR := ./src
 
 all: install build
 
-define  makeallmodules
-	for idir in $(SOURCE_DIR)/*; \
-		do \
-		make -C $$dir $(1); \
-		done
-endef
-
 build:
 	@echo "##### BUILDING ALL MODULES #####"
 	(cd src/tensors; $(BUILD))
@@ -20,6 +13,7 @@ build:
 	(cd tests/test-tensor; $(BUILD))
 	(cd tests/test-vector; $(BUILD))
 	(cd tests/test-matrix; $(BUILD))
+	(cd tests/test-sparsematrix; $(BUILD))
 	(cd tests/test-jacobi; $(BUILD))
 	(cd tests/test-gaussseidel; $(BUILD))
 	(cd tests/test-system_solvers; $(BUILD))
@@ -31,10 +25,12 @@ clean:
 	(cd tests/test-tensor; $(CLEAN))
 	(cd tests/test-vector; $(CLEAN))
 	(cd tests/test-matrix; $(CLEAN))
+	(cd tests/test-sparsematrix; $(CLEAN))
 	(cd tests/test-jacobi; $(CLEAN))
 	(cd tests/test-gaussseidel; $(CLEAN))
 	(cd tests/test-system_solvers; $(CLEAN))
 	-rm -v iheaders/*
+	-rm -rv objs/*
 
 install: 
 	@echo "##### INSTALLING HEADERS #####"
