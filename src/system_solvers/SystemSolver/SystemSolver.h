@@ -26,9 +26,9 @@ class SystemSolver{
 
         /* Utilities */
         virtual void solve() = 0;
-        void write() const;
-        void write_matrix() const;
-        void write_source() const;
+        void write(const std::string& file_name) const;
+        void write_matrix(const std::string& file_name) const;
+        void write_source(const std::string& file_name) const;
         inline void print_info() const
         {
             std::cout << "Solver Info" << std::endl;
@@ -46,10 +46,10 @@ class SystemSolver{
         }
 
         /* Accessors */
-        void set_max_iter(double value) {max_iter_ = value;}
-        void set_tol(double value) {tolerance_ = value;}
-        void set_rel_tol(double value) {relative_tolerance_ = value;}
-        void set_rel_factor(double value) {relaxation_factor_ = value;}
+        inline void set_max_iter(double value) {max_iter_ = value;}
+        inline void set_tol(double value) {tolerance_ = value;}
+        inline void set_rel_tol(double value) {relative_tolerance_ = value;}
+        inline void set_rel_factor(double value) {relaxation_factor_ = value;}
         inline const std::string& name() const {return name_;}
         inline std::string& name() {return name_;}
         inline double residual() const {return residual_;}

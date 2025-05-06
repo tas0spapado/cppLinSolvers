@@ -43,10 +43,10 @@ relaxation_factor_(1.0)
 }
 
 
-void SystemSolver::write() const 
+void SystemSolver::write(const std::string& file_name) const 
 {
     std::ofstream output_file; 
-    output_file.open("x");
+    output_file.open(file_name);
 
     for (size_t i=0; i<x_.size(); ++i)
         output_file << x_[i] << std::endl;
@@ -55,10 +55,10 @@ void SystemSolver::write() const
 }
 
 
-void SystemSolver::write_matrix() const 
+void SystemSolver::write_matrix(const std::string& file_name) const 
 {
     std::ofstream output_file;
-    output_file.open("A");
+    output_file.open(file_name);
 
     for (size_t i=0; i<A_.rows(); ++i)
     {
@@ -71,10 +71,10 @@ void SystemSolver::write_matrix() const
 }
 
 
-void SystemSolver::write_source() const 
+void SystemSolver::write_source(const std::string& file_name) const 
 {
     std::ofstream output_file; 
-    output_file.open("b");
+    output_file.open(file_name);
 
     for (size_t i=0; i<b_.size(); ++i)
         output_file << b_[i] << std::endl;

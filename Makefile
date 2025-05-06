@@ -17,6 +17,7 @@ build:
 	(cd tests/test-jacobi; $(BUILD))
 	(cd tests/test-gaussseidel; $(BUILD))
 	(cd tests/test-system_solvers; $(BUILD))
+	(cd apps/Poisson2D; $(BUILD))
 
 clean: 
 	@echo "##### CLEANING ALL MODULES #####"
@@ -29,6 +30,7 @@ clean:
 	(cd tests/test-jacobi; $(CLEAN))
 	(cd tests/test-gaussseidel; $(CLEAN))
 	(cd tests/test-system_solvers; $(CLEAN))
+	(cd apps/Poisson2D; $(CLEAN))
 	-rm -v iheaders/*
 	-rm -rv objs/*
 

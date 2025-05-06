@@ -91,7 +91,7 @@ void Tensor::set(size_t i, size_t j, double value)
     if (i>=this->rows() || j>=this->columns())
     {
         std::cerr << "FATAL ERROR: Attempted to modify element (" << i << "," << j << ") of a " 
-            << rows_ << "x" << cols_ << "tensor.\n";  
+            << rows_ << "x" << cols_ << " tensor.\n";  
         std::exit(EXIT_FAILURE);
     }
     
