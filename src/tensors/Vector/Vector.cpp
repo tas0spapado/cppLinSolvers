@@ -95,3 +95,10 @@ Vector& Vector::operator=(const Tensor& rhs)
     
     return *this;
 }
+
+
+void Vector::swap(Tensor& other) noexcept
+{
+    auto& oth = static_cast<Vector&>(other);
+    Tensor::swap(oth);
+}

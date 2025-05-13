@@ -1,8 +1,10 @@
 #include "Tensor.h"
 #include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <cmath>
-
+#include <algorithm>
+#include <typeinfo>
 
 Tensor Tensor::eye(size_t m)
 {
@@ -367,3 +369,25 @@ void Tensor::transpose()
 }
 
 
+void Tensor::swap(Tensor& other) noexcept
+{
+    using std::swap;
+    swap(A_, other.A_);
+    swap(rows_, other.rows_);
+    swap(cols_, other.cols_);
+}
+
+void swap(Tensor& T1, Tensor& T2) noexcept
+{
+    if (typeid(T1) != typeid(T2))
+    {
+        std::cerr << "FATAL ERROR: Attempted to swap '"
+                  << typeid(T1).name() 
+                  << "' and '"
+                  << typeid(T2).name()
+                  << "'.\n";
+        std::exit(EXIT_FAILURE);
+    }
+
+    T1.swap(T2);
+}

@@ -112,7 +112,7 @@ void SparseMatrix::set(size_t i, size_t j, double value)
     if (i>=this->rows() || j>=this->columns())                                                                                                                                                                                                          
     {                                                                                                                    
         std::cerr << "FATAL ERROR: Attempted to insert or modify element (" << i << "," << j << ") of a "                          
-            << rows_ << "x" << cols_ << "tensor.\n";                                                                     
+            << rows_ << "x" << cols_ << " tensor.\n";                                                                     
         std::exit(EXIT_FAILURE);                                                                                         
     } 
    
@@ -177,6 +177,14 @@ void SparseMatrix::print_sparse() const
 }
 
 
+void SparseMatrix::swap(Tensor& other) noexcept
+{
+    auto& oth = static_cast<SparseMatrix&>(other);
+    Tensor::swap(other);
+    
+    std::swap(col_index_, oth.col_index_);
+    std::swap(row_ptr_, oth.row_ptr_);
+}
 
 
 

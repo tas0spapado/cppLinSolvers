@@ -16,6 +16,8 @@ class Matrix: public Tensor{
         Matrix(size_t m, double value);     //constructor for uniform value
         Matrix(const std::initializer_list<std::initializer_list<double>>& init);  //initializer list constructor
         Matrix(const Tensor& other);
+
+        void swap(Tensor& other) noexcept override;
 };
 
 #endif

@@ -51,6 +51,8 @@ class Tensor
         void print() const;
         double norm() const;        //computes the norm2 of the tensor
         virtual void transpose();
+        virtual void swap(Tensor& other) noexcept;
+        friend void swap(Tensor& T1, Tensor& T2) noexcept;
 
         /* Inline Functions */
         inline const double& operator()(size_t i, size_t j) const {return this->at(i,j);}

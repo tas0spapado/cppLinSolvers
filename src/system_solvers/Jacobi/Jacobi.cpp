@@ -8,7 +8,12 @@ SystemSolver("Jacobi", A, x, b)
 
 void Jacobi::solve()
 {
+    iter_ = 0;
+    initial_residual_ = (b_ - A_*x_).norm();
+    residual_ = 1.0;
+    
     print_info();
+    std::cout << "Absolute initial residual: " << initial_residual_ << '\n';
     print_iter(); 
 
     Vector x_old_(x_);
@@ -37,7 +42,7 @@ void Jacobi::solve()
             std::cout << "CONVERGED after " << iter_ << " iterations.\n";
             break;
         }
-        x_old_ = x_;
+        swap(x_,x_old_);
     }
 
     if (iter_ > max_iter_)

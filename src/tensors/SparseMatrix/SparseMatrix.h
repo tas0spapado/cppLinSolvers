@@ -30,6 +30,8 @@ class SparseMatrix: public Tensor{
         void set(size_t i, size_t j, double value) override;
         void transpose() override;
         void print_sparse() const;
+        void swap(Tensor& other) noexcept override;
+
         inline size_t non_zero() const {return row_ptr_.back();}
 };
 

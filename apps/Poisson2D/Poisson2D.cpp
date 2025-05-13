@@ -36,7 +36,6 @@ class solverControl{
 };
 
 Vector fill_system(Tensor& A, Vector& b, const solverControl& control);
-void write(const Vector& u, const solverControl& control);
 
 
 int main()

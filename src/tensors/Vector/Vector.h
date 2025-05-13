@@ -20,6 +20,8 @@ class Vector: public Tensor{
         const double& operator[](size_t i) const;
         double operator&(const Vector& rhs) const;  //dot product
         Vector& operator=(const Tensor& rhs);
+
+        void swap(Tensor& other) noexcept override;
 };
 
 #endif

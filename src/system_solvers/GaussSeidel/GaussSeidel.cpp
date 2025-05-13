@@ -8,9 +8,13 @@ SystemSolver("GaussSeidel", A, x, b)
 
 void GaussSeidel::solve()
 {
-    print_info();
-    print_iter(); 
+    iter_ = 0;
+    initial_residual_ = (b_ - A_*x_).norm();
+    residual_ = 1.0;
 
+    print_info();
+    std::cout << "Absolute initial residual: " << initial_residual_ << '\n';
+    print_iter(); 
 
     while(++iter_ <= max_iter_)
     {

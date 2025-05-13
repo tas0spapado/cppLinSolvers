@@ -28,3 +28,9 @@ Tensor(other)
         std::exit(EXIT_FAILURE);
     }
 }
+
+void Matrix::swap(Tensor& other) noexcept
+{
+    auto& oth = static_cast<Matrix&>(other);
+    Tensor::swap(oth);
+}
