@@ -19,7 +19,7 @@ build:
 	(cd tests/test-system_solvers; $(BUILD))
 	(cd tests/test-swap; $(BUILD))
 	(cd apps/Poisson2D; $(BUILD))
-	#(cd apps/Quasi1DNS; $(BUILD))
+	(cd apps/parallelPoisson2D; $(BUILD))
 
 clean: 
 	@echo "##### CLEANING ALL MODULES #####"
@@ -34,7 +34,7 @@ clean:
 	(cd tests/test-system_solvers; $(CLEAN))
 	(cd tests/test-swap; $(CLEAN))
 	(cd apps/Poisson2D; $(CLEAN))
-	#(cd apps/Quasi1DNS; $(CLEAN))
+	(cd apps/parallelPoisson2D; $(CLEAN))
 	-rm -v iheaders/*
 	-rm -rv objs/*
 

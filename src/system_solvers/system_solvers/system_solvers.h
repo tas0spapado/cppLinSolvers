@@ -2,8 +2,6 @@
 #define SYSTEM_SOLVERS_H
 
 #include "SystemSolver.h"
-#include "Jacobi.h"
-#include "GaussSeidel.h"
 
 #include <memory>
 #include <string>
@@ -11,11 +9,7 @@
 
 namespace system_solvers{
 
-    static const std::unordered_map<std::string, std::unique_ptr<SystemSolver> (*)(Tensor& A, Vector& x, Vector&b)> solvers =
-    {
-        {"Jacobi", [](Tensor& A, Vector& x, Vector&b) -> std::unique_ptr<SystemSolver>{return std::make_unique<Jacobi>(A,x,b);}},
-        {"GaussSeidel", [](Tensor& A, Vector& x, Vector&b) -> std::unique_ptr<SystemSolver>{return std::make_unique<GaussSeidel>(A,x,b);}}
-    };
+    extern const std::unordered_map<std::string, std::unique_ptr<SystemSolver> (*)(Tensor& A, Vector& x, Vector&b)> solvers;
 
     inline std::unique_ptr<SystemSolver> create_solver(const std::string& solver_name, Tensor& A, Vector& x, Vector& b)
     {

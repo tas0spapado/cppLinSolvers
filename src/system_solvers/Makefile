@@ -1,4 +1,4 @@
-SRC_FILES = SystemSolver/SystemSolver.cpp Jacobi/Jacobi.cpp GaussSeidel/GaussSeidel.cpp
+SRC_FILES = SystemSolver/SystemSolver.cpp Jacobi/Jacobi.cpp GaussSeidel/GaussSeidel.cpp system_solvers/system_solvers.cpp openmp_settings/openmp_settings.cpp pJacobi/pJacobi.cpp
 TARGET_NAME = systemsolvers
 BUILD_MODE = RELEASE
 
@@ -34,15 +34,17 @@ LDXX := $(or $(LDXX),g++)
 STD_FLAG = -std=c++20
 DEBUG_FLAGS = -pipe -g -fPIC
 RELEASE_FLAGS = -pipe -fPIC $(OPT_FLAGS)
+ADDITIONAL_CXXFLAGS = -fopenmp
+ADDITIONAL_LDFLAGS = -fopenmp
 BUILD_FLAGS = $(if $(filter $(BUILD_MODE),DEBUG),$(DEBUG_FLAGS),$(RELEASE_FLAGS))
 DEFINES = -DBUILD_TIMESTAMP_STR=\"$(BUILD_TIMESTAMP)\" \
 		  -DPROJ_ROOT_DIR=\"$(PROJ_ROOT_DIR)\" \
 		  $(USER_DEFINES)
 INC_FLAGS = $(foreach inc,$(USER_INC_PATHS),-I$(inc)) -I$(HEAD_DIR)
-CXXFLAGS = $(STD_FLAG) $(BUILD_FLAGS) $(DEFINES) $(WARN_FLAGS) $(INC_FLAGS)
+CXXFLAGS = $(STD_FLAG) $(BUILD_FLAGS) $(DEFINES) $(WARN_FLAGS) $(INC_FLAGS) $(ADDITIONAL_CXXFLAGS)
 RPATH = -Wl,-rpath,$(LIB_DIR) $(foreach libdir,$(USER_LIB_DIRS),-Wl,-rpath,$(libdir))
 USER_LIB_DIR_FLAGS = $(foreach libdir,$(USER_LIB_DIRS),-L$(libdir))
-LDFLAGS = -L$(LIB_DIR) $(LIBS) $(USER_LIB_DIR_FLAGS) $(USER_LIBS) $(RPATH)
+LDFLAGS = -L$(LIB_DIR) $(LIBS) $(USER_LIB_DIR_FLAGS) $(ADDITIONAL_LDFLAGS) $(USER_LIBS) $(RPATH)
 
 # OBJECT FILES 
 OBJ = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))

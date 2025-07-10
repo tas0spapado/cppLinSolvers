@@ -7,6 +7,7 @@ objs/*
 *.swp
 *~
 *venv
+log.*
 
 # ignore compilation database
 compile_commands.json
