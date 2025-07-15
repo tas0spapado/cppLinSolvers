@@ -53,6 +53,7 @@ class Tensor
         virtual void transpose();
         virtual void swap(Tensor& other) noexcept;
         friend void swap(Tensor& T1, Tensor& T2) noexcept;
+        bool is_symmetric(double tol = 1e-10) const;
 
         /* Inline Functions */
         inline const double& operator()(size_t i, size_t j) const {return this->at(i,j);}

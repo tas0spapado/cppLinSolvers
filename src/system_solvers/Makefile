@@ -1,4 +1,4 @@
-SRC_FILES = SystemSolver/SystemSolver.cpp Jacobi/Jacobi.cpp GaussSeidel/GaussSeidel.cpp system_solvers/system_solvers.cpp openmp_settings/openmp_settings.cpp pJacobi/pJacobi.cpp
+SRC_FILES = SystemSolver/SystemSolver.cpp Jacobi/Jacobi.cpp GaussSeidel/GaussSeidel.cpp
 TARGET_NAME = systemsolvers
 BUILD_MODE = RELEASE
 
@@ -7,7 +7,7 @@ OPT_FLAGS = -O2
 WARN_FLAGS = -Wall -Wextra #-Werror
 USER_DEFINES = 		#extra user defines, like macros or other flags like -pthread 
 USER_INC_PATHS =  	#for extra header dir, other than share_headers
-LIBS = -ltensors 	#libs in $(LIB_DIR) 
+LIBS = -ltensors -lopenmp_settings 	#libs in $(LIB_DIR) 
 USER_LIB_DIRS = 	#directories of extra libraries that will be linked to the current library 
 USER_LIBS = 		#names of the libraries 
 
@@ -19,7 +19,7 @@ ifeq ($(PROJ_ROOT_DIR),)
 endif
 OBJ_DIR = $(PROJ_ROOT_DIR)/objs
 LIB_DIR = $(PROJ_ROOT_DIR)/libs
-HEAD_DIR = $(PROJ_ROOT_DIR)/iheaders
+HEAD_DIR = $(PROJ_ROOT_DIR)/linked_headers
 
 #====================================================
 
@@ -75,12 +75,6 @@ install_headers:
 			echo "Warning: $$hdr not found."; \
 		fi \
 	done
-	@if [ -f system_solvers.h ]; then \
-		ln -sf "$$(realpath --relative-to=$(HEAD_DIR) system_solvers.h)" "$(HEAD_DIR)/system_solvers.h"; \
-		echo "Linked: system_solvers.h → $(HEAD_DIR)/system_solvers.h"; \
-	else \
-		echo "Warning: system_solvers.h not found."; \
-	fi
 
 clean: 
 	-rm -v $(TARGET)

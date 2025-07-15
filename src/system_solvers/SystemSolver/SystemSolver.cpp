@@ -1,10 +1,30 @@
 #include "SystemSolver.h"
-#include <cstddef>
 #include <cstdlib>
-#include <iostream>
 #include <fstream>
 
-SystemSolver::SystemSolver(const std::string& name, Tensor& A, Vector& x, Vector& b):
+std::unique_ptr<SystemSolver> SystemSolver::create
+(
+    const std::string& name,
+    const Tensor& A,
+    Vector& x,
+    const Vector& b
+)
+{
+    auto it = SystemSolver::SystemSolver_registry().find(name);
+    if (it != SystemSolver::SystemSolver_registry().end())
+        return std::unique_ptr<SystemSolver>(it->second(A,x,b));
+    else 
+    {
+        std::cerr << "Error: Solver " << name << " not found.\nAvailable Solvers:\n";
+        for (const auto& [key,value]: SystemSolver::SystemSolver_registry())
+            std::cerr << key << std::endl;
+        std::cerr << std::endl;
+    }
+    return nullptr;
+}
+
+
+SystemSolver::SystemSolver(const std::string& name, const Tensor& A, Vector& x, const Vector& b):
 name_(name),
 A_(A),
 x_(x),

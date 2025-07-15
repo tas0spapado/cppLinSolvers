@@ -3,7 +3,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <cstdlib>
-
+#include "openmp_settings.h"
 
 Vector::Vector(size_t m, double value):
 Tensor(m,1,value)
@@ -70,6 +70,7 @@ double Vector::operator&(const Vector& rhs) const
     }
     double result = 0.0;
 
+    #pragma omp parallel for reduction(+:result)
     for (size_t i=0; i<this->size(); ++i)
         result += A_.at(i)*rhs.A_.at(i);
         //result += this->operator[](i)*rhs[i];

@@ -1,7 +1,16 @@
 #include "GaussSeidel.h"
 #include <cstddef>
 
-GaussSeidel::GaussSeidel(Tensor& A, Vector& x, Vector& b):
+REGISTER_DERIVED
+(
+    SystemSolver, 
+    GaussSeidel, 
+    (const Tensor& A, Vector& x, const Vector& b),
+    (A, x, b)
+)
+
+
+GaussSeidel::GaussSeidel(const Tensor& A, Vector& x, const Vector& b):
 SystemSolver("GaussSeidel", A, x, b)
 {}
 

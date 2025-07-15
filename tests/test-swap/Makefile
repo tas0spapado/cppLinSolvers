@@ -7,7 +7,7 @@ OPT_FLAGS = -O2
 WARN_FLAGS = -Wall -Wextra -Werror
 USER_DEFINES =
 USER_INC_PATHS =
-LIBS = -ltensors -lsystemsolvers
+LIBS = -lopenmp_settings -ltensors
 USER_LIB_DIRS =
 USER_LIBS =
 
@@ -18,7 +18,7 @@ ifeq ($(PROJ_ROOT_DIR),)
 	PROJ_ROOT_DIR = $(PROJ_ROOT_DIR_0)
 endif
 LIB_DIR = $(PROJ_ROOT_DIR)/libs
-HEAD_DIR = $(PROJ_ROOT_DIR)/iheaders
+HEAD_DIR = $(PROJ_ROOT_DIR)/linked_headers
 BIN_DIR = $(PROJ_ROOT_DIR)/bins
 
 # ATTRIBUTES 

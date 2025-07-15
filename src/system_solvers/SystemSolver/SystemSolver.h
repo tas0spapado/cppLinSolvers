@@ -6,21 +6,36 @@
 #include <iostream>
 #include "Tensor.h"
 #include "Vector.h"
-
+#include <memory>
+#include "registry.h"
 
 class SystemSolver{
+
+    DECLARE_REGISTRY
+    (
+        SystemSolver,
+        (const Tensor&, Vector&, const Vector&)
+    )
+
     protected:
         std::string name_;      //solver name
-        Tensor& A_;             //coefficient matrix - either sparse or full
+        const Tensor& A_;             //coefficient matrix - either sparse or full
         Vector& x_;             //solution vector
-        Vector& b_;             //source vector
+        const Vector& b_;             //source vector
         size_t iter_, max_iter_;  //iterations and maximum number of iterations
         double tolerance_, relative_tolerance_;   //absolute and relative tolerance
         double relaxation_factor_;
         double initial_residual_, residual_;
     public:
+        static std::unique_ptr<SystemSolver> create
+        (
+            const std::string& name,
+            const Tensor& A,
+            Vector& x,
+            const Vector& b
+        );
         /* Constructors */
-        SystemSolver(const std::string& name, Tensor& A, Vector& x, Vector& b);
+        SystemSolver(const std::string& name, const Tensor& A, Vector& x, const Vector& b);
 
         virtual ~SystemSolver() = default;
 

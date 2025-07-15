@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
-
+#include "openmp_settings.h"
 
 void print(const std::string& msg)
 {
@@ -14,6 +14,8 @@ void print(const std::string& msg)
 
 int main()
 {
+    openmp_settings::set_num_threads(1); 
+
     print("GaussSeidel Test");
     std::cout << "Solution of a tri-diagonal system.\n\n";
 

@@ -1,10 +1,11 @@
-#include "system_solvers.h"
 #include <SparseMatrix.h>
 #include <Vector.h>
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <memory>
+#include "SystemSolver.h"
+#include "openmp_settings.h"
 
 
 void print(const std::string& msg)
@@ -14,6 +15,8 @@ void print(const std::string& msg)
 
 int main()
 {
+    openmp_settings::set_num_threads(1);
+
     print("system_solvers Test");
     std::cout << "Solution of a tri-diagonal system.\n\n";
 
@@ -39,12 +42,13 @@ int main()
     std::string solver_name;
     size_t i = 0;
     std::cout << "Available solvers:\n";
-    for (const auto& pair: system_solvers::solvers)
+    for (const auto& pair: SystemSolver::SystemSolver_registry())
         std::cout << ++i << ". " << pair.first << std::endl;
     std::cout << "Select solver: ";
     std::cin >> solver_name;
 
-    std::unique_ptr<SystemSolver> solver = system_solvers::create_solver(solver_name,A,x,b); 
+    std::unique_ptr<SystemSolver> solver = 
+        SystemSolver::create(solver_name,A,x,b); 
 
     if (!solver)
     {

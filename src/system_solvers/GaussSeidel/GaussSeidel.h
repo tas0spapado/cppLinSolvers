@@ -6,7 +6,7 @@
 class GaussSeidel: public SystemSolver{
     public:
         /* Constructors */
-        GaussSeidel(Tensor& A, Vector& x, Vector& b);
+        GaussSeidel(const Tensor& A, Vector& x, const Vector& b);
         void solve() override;
 };
 

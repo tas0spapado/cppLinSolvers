@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <typeinfo>
+#include "openmp_settings.h"
 
 Tensor Tensor::eye(size_t m)
 {
@@ -175,6 +176,7 @@ Tensor Tensor::operator*(const Tensor& rhs) const
 
     Tensor result(this->rows(),rhs.columns(),0.0);
     
+    #pragma omp parallel for
     for (size_t i=0; i<result.rows(); ++i)
     {
         for (size_t j=0; j<result.columns(); ++j)
@@ -202,13 +204,18 @@ Tensor Tensor::operator+(const Tensor& rhs) const
 
     Tensor result(this->rows(), this->columns(), 0.0);
 
+    /*#pragma omp parallel for
     for (size_t i=0; i<this->rows(); ++i)
     {
         for (size_t j=0; j < this->columns(); ++j)
         {
             result.set(i,j,this->at(i,j)+rhs.at(i,j));
         }
-    }
+    }*/
+    size_t N = result.A_.size();
+    #pragma omp parallel for 
+    for (std::size_t i=0; i<N; ++i)
+        result.A_[i] = this->A_[i] + rhs.A_[i];
 
     return result;
 }
@@ -226,14 +233,20 @@ Tensor Tensor::operator-(const Tensor& rhs) const
 
     Tensor result(this->rows(), this->columns(), 0.0);
 
+    /*#pragma omp parallel for
     for (size_t i=0; i<this->rows(); ++i)
     {
         for (size_t j=0; j < this->columns(); ++j)
         {
             result.set(i,j,this->at(i,j)-rhs.at(i,j));
         }
-    }
+    }*/
 
+    size_t N = result.A_.size();
+    #pragma omp parallel for 
+    for (std::size_t i=0; i<N; ++i)
+        result.A_[i] = this->A_[i] - rhs.A_[i];
+    
     return result;
 }
 
@@ -241,8 +254,10 @@ Tensor Tensor::operator-(const Tensor& rhs) const
 Tensor Tensor::operator+(double rhs) const 
 {
     Tensor result(*this);
-    for (double& ele: result.A_)
-        ele += rhs;
+    size_t N = result.A_.size();
+    #pragma omp parallel for 
+    for (size_t i=0; i<N; ++i)
+        result.A_[i] += rhs;
 
     return result; 
 }
@@ -259,8 +274,10 @@ Tensor Tensor::operator-(double rhs) const
 Tensor operator*(double lhs, const Tensor& rhs)
 {
     Tensor result(rhs);
-    for (double& ele: result.A_)
-        ele *= lhs;
+    size_t N = result.A_.size();
+    #pragma omp parallel for 
+    for (size_t i=0; i<N; ++i)
+        result.A_[i] *= lhs;
 
     return result; 
 }
@@ -317,11 +334,11 @@ Tensor& Tensor::operator*=(double rhs)
 Tensor Tensor::operator-() const 
 {
     Tensor result(*this);
-    for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            result.set(i,j,-result.at(i,j));
-    }
+    size_t N = result.A_.size();
+    
+    #pragma omp parallel for 
+    for (size_t i=0; i<N; ++i)
+        result.A_[i] = -result.A_[i];
 
     return result;
 }
@@ -343,12 +360,11 @@ double Tensor::norm() const
 {
     double result= 0.0;
 
-    for (size_t i=0; i<this->rows(); ++i)
-    {
-        for (size_t j=0; j<this->columns(); ++j)
-            result += pow(at(i,j),2);
-    }
-    
+    size_t N = A_.size();
+    #pragma omp parallel for reduction(+:result)
+    for (size_t i=0; i<N; ++i)
+        result += A_[i] * A_[i];
+
     return sqrt(result); 
 }
 
@@ -390,4 +406,26 @@ void swap(Tensor& T1, Tensor& T2) noexcept
     }
 
     T1.swap(T2);
+}
+
+bool Tensor::is_symmetric(double tol) const 
+{
+    if (!is_square())
+    {
+        std::cout << "Cannot check symmetry of non-square tensors\n";
+        return false;
+    }
+
+    for (size_t i=0; i<rows(); ++i)
+    {
+        for (size_t j=0; j<i; ++j)
+        {
+            if (std::abs(at(i,j) - at(j,i)) > tol)
+            {
+                return false; 
+            }
+        }
+    }
+    
+    return true; 
 }

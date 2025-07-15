@@ -6,15 +6,20 @@
 #include <iostream>
 #include <string>
 #include <memory>
-
+#include "openmp_settings.h"
 
 void print(const std::string& msg)
 {
     std::cout << "=====" << msg << "=====" << std::endl;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    if (argc>1)
+        openmp_settings::set_num_threads(std::atoi(argv[1]));
+    else 
+        openmp_settings::set_num_threads(1);
+
     print("Jacobi Test");
     std::cout << "Solution of a tri-diagonal system.\n\n";
 

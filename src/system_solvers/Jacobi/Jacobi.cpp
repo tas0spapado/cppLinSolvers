@@ -1,13 +1,25 @@
 #include "Jacobi.h"
 #include <cstddef>
+#include <omp.h>
+#include "openmp_settings.h"
 
-Jacobi::Jacobi(Tensor& A, Vector& x, Vector& b):
+REGISTER_DERIVED
+(
+    SystemSolver, 
+    Jacobi, 
+    (const Tensor& A, Vector& x, const Vector& b),
+    (A, x, b)
+)
+
+
+Jacobi::Jacobi(const Tensor& A, Vector& x, const Vector& b):
 SystemSolver("Jacobi", A, x, b)
 {}
 
 
 void Jacobi::solve()
 {
+    std::cout << "Solving in " << openmp_settings::num_threads << " threads\n";
     iter_ = 0;
     initial_residual_ = (b_ - A_*x_).norm();
     residual_ = 1.0;
@@ -20,6 +32,7 @@ void Jacobi::solve()
 
     while(++iter_ <= max_iter_)
     {
+        #pragma omp parallel for
         for (size_t i=0; i<x_.size(); ++i)
         {
             x_[i] = (1-relaxation_factor_)*x_old_[i] 

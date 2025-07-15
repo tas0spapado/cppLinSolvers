@@ -1,11 +1,12 @@
 #include "SparseMatrix.h"
 #include "Vector.h"
-#include "system_solvers.h"
 #include <cstddef>
 #include <memory>
 #include <cmath>
 #include <fstream>
-
+#include "openmp_settings.h"
+#include <cstdlib>
+#include "SystemSolver.h"
 
 /*
     Solution of the PDE u_xx + u_yy = 4 using the Finite Difference method
@@ -25,7 +26,8 @@ class solverControl{
     solverControl();
     solverControl(const std::string& file_name);    //read controls from a file, named "controls" 
     void write_coordinates() const; 
-    inline const std::string& solver_name() const {return solver_name_;}    
+    inline const std::string& solver_name() const {return solver_name_;} 
+    inline std::string& solver_name() {return solver_name_;}
     inline std::size_t Nx() const {return Nx_;}
     inline std::size_t Ny() const {return Ny_;}
     inline double relaxation_factor() const {return relaxation_factor_;}
@@ -38,8 +40,12 @@ class solverControl{
 Vector fill_system(Tensor& A, Vector& b, const solverControl& control);
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    if (argc>1)
+        openmp_settings::set_num_threads(std::atoi(argv[1]));
+    else 
+        openmp_settings::set_num_threads(1);
     
     solverControl control("controls");
     std::size_t imax = control.imax();
@@ -54,14 +60,15 @@ int main()
     Vector u(imax*jmax,1.0);   
     Vector an_solution = fill_system(A,b,control);
     
-    std::unique_ptr<SystemSolver> solver = system_solvers::create_solver(solver_name,A,u,b);
+    std::unique_ptr<SystemSolver> solver = 
+        SystemSolver::create(solver_name,A,u,b);
+    //solver->write_matrix("A");
+    //solver->write_source("b");
     solver->set_max_iter(max_iter);
     solver->set_tol(tolerance);
     solver->set_rel_factor(relaxation_factor);
     solver->solve();
     
-    //solver->write_matrix("A");
-    //solver->write_source("b");
 
 
     Vector error = u - an_solution;
@@ -74,7 +81,7 @@ int main()
 
 solverControl::solverControl()
 {
-    solver_name_ = "GaussSeidel";
+    solver_name_ = "pJacobi";
     Nx_ = 100;
     Ny_ = 100;
     relaxation_factor_ = 1.0;
@@ -141,7 +148,7 @@ Vector fill_system(Tensor& A, Vector& b, const solverControl& control)
             A.set(k,k+1,rdx2);
             A.set(k,k-1,rdx2);
             A.set(k,k+imax,rdy2);
-            A.set(k,k-jmax,rdy2);
+            A.set(k,k-imax,rdy2);
             b[k] = 4.0;
         }
     }

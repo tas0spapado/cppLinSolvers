@@ -6,7 +6,7 @@
 class Jacobi: public SystemSolver{
     public:
         /* Constructors */
-        Jacobi(Tensor& A, Vector& x, Vector& b);
+        Jacobi(const Tensor& A, Vector& x, const Vector& b);
         void solve() override;
 };
 

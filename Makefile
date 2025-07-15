@@ -8,6 +8,7 @@ all: install build
 
 build:
 	@echo "##### BUILDING ALL MODULES #####"
+	(cd src/openmp_settings; $(BUILD))
 	(cd src/tensors; $(BUILD))
 	(cd src/system_solvers; $(BUILD))
 	(cd tests/test-tensor; $(BUILD))
@@ -19,10 +20,10 @@ build:
 	(cd tests/test-system_solvers; $(BUILD))
 	(cd tests/test-swap; $(BUILD))
 	(cd apps/Poisson2D; $(BUILD))
-	(cd apps/parallelPoisson2D; $(BUILD))
 
 clean: 
 	@echo "##### CLEANING ALL MODULES #####"
+	(cd src/openmp_settings; $(CLEAN))
 	(cd src/tensors; $(CLEAN))
 	(cd src/system_solvers; $(CLEAN))
 	(cd tests/test-tensor; $(CLEAN))
@@ -34,11 +35,11 @@ clean:
 	(cd tests/test-system_solvers; $(CLEAN))
 	(cd tests/test-swap; $(CLEAN))
 	(cd apps/Poisson2D; $(CLEAN))
-	(cd apps/parallelPoisson2D; $(CLEAN))
-	-rm -v iheaders/*
+	-rm -v linked_headers/*
 	-rm -rv objs/*
 
 install: 
 	@echo "##### INSTALLING HEADERS #####"
+	(cd src/openmp_settings; $(INSTALL))
 	(cd src/tensors; $(INSTALL))
 	(cd src/system_solvers; $(INSTALL))

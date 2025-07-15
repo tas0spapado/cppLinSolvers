@@ -2,6 +2,7 @@
 #include "Tensor.h"
 #include <iostream>
 #include <string>
+#include "openmp_settings.h"
 
 void print(const std::string& msg)
 {
@@ -10,7 +11,8 @@ void print(const std::string& msg)
 
 int main()
 {
-
+    openmp_settings::set_num_threads(1);
+    
     print("Matrix Test");
     
     print("Test Uniform Constructor");
